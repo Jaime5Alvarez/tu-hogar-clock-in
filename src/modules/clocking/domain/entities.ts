@@ -1,6 +1,7 @@
 import { clockIn, clockOut } from "@/modules/shared/drizzle/schema";
+import { InferSelectModel } from "drizzle-orm";
 
-export type Clocking = typeof clockIn.$inferSelect;
+export type ClockIn = InferSelectModel<typeof clockIn>;
 
-export type ClockingOut = typeof clockOut.$inferSelect;
+export type ClockOut = InferSelectModel<typeof clockOut>;
 

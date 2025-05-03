@@ -1,13 +1,13 @@
-import { Clocking } from "./entities";
+import { ClockIn, ClockOut } from "./entities";
 
 export interface IClockingUseCase {
-    createClockIn(clockIn: Clocking): Promise<Clocking>;
-    createClockOut(clockOut: Clocking): Promise<Clocking>;
+    createClockIn(clockIn: ClockIn): Promise<void>;
+    createClockOut(clockOut: ClockOut): Promise<void>;
 }
 
 export interface IClockingRepository {
-    createClockIn(clockIn: Clocking): Promise<Clocking>;
-    createClockOut(clockOut: Clocking): Promise<Clocking>;
+    createClockIn(clockIn: ClockIn): Promise<void>;
+    createClockOut(clockOut: ClockOut): Promise<void>;
 }
 
 
