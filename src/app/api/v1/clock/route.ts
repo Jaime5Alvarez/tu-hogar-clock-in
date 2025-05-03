@@ -10,5 +10,5 @@ export async function POST(request: NextRequest) {
   }
   const { notes } = await request.json();
   console.log(notes);
-  return NextResponse.json({ message: "Clock in created" });
+  return NextResponse.json({ message: "Clock registered" });
 }
