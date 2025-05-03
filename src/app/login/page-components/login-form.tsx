@@ -18,6 +18,7 @@ import { AlertCircleIcon, Loader2, Lock, Mail } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
+
 const formSchema = z.object({
   email: z.string().email({
     message: "Email inválido.",
@@ -41,19 +42,17 @@ export default function LoginForm() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setIsLoading(true);
-      const { data, error } = await authClient.signUp.email({
+      const { data, error } = await authClient.signIn.email({
         email: values.email,
         password: values.password,
-        name: values.email,
-        image: "https://example.com/image.png",
-        callbackURL: "/",
       });
       if (error) {
-        setError(error.message || "Error al iniciar sesión");
+        setError("Contraseña o email incorrectos");
       }
       console.log(data);
     } catch (error) {
       console.log(error);
+      setError("Error inesperado. Por favor, intenta de nuevo más tarde.");
     } finally {
       setIsLoading(false);
     }
