@@ -25,7 +25,7 @@ const createNewSimpleUser = async ({
 };
 
 createNewSimpleUser({
-    email: "test@test.com",
-    password: "test1234",
-    name: "Test User",
+    email: "jaime5alvarez5h@gmail.com",
+    password: "zwinito-gordito-jugosito",
+    name: "Jaime Alvarez",
 });
