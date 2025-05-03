@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
 
     const lastClockIn = await clockingUseCase.getLastClockIn(userId);
 
-    if (clockType === "out" && lastClockIn.clockOutId) {
+    if (clockType === "out" && (!lastClockIn || lastClockIn.clockOutId)) {
       return NextResponse.json(
         {
           error: "No clock in found",
