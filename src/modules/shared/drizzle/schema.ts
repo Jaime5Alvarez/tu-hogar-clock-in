@@ -77,19 +77,9 @@ export const clockOut = pgTable("clock_out", {
   userId: text("user_id")
     .notNull()
     .references(() => user.id),
-  createdAt: timestamp("created_at", { mode: "string" }).notNull(),
-  updatedAt: timestamp("updated_at", { mode: "string" }).notNull(),
-});
-
-export const clockInOut = pgTable("clock_in_out", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => user.id),
   clockInId: uuid("clock_in_id")
     .notNull()
     .references(() => clockIn.id),
-  clockOutId: uuid("clock_out_id").references(() => clockOut.id),
   createdAt: timestamp("created_at", { mode: "string" }).notNull(),
   updatedAt: timestamp("updated_at", { mode: "string" }).notNull(),
 });

@@ -8,6 +8,13 @@
       "when": 1746286376954,
       "tag": "0000_cloudy_gauntlet",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1746287882885,
+      "tag": "0001_wealthy_mongoose",
+      "breakpoints": true
     }
   ]
 }
