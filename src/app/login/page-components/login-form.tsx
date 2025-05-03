@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
-import { useRouter } from "next/navigation";
 import {
   Form,
   FormControl,
@@ -15,8 +14,9 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import Link from "next/link";
-import { Loader2, Lock, Mail } from "lucide-react";
+import { AlertCircleIcon, Loader2, Lock, Mail } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -37,10 +37,20 @@ export default function LoginForm() {
     },
   });
 
-  const router = useRouter();
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
+  const [error, setError] = useState("");
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       setIsLoading(true);
+      const { data, error } = await authClient.signUp.email({
+        email: values.email,
+        password: values.password,
+        name: values.email,
+        image: "https://example.com/image.png",
+        callbackURL: "/",
+      });
+      if (error) {
+        setError(error.message || "Error al iniciar sesión");
+      }
       console.log(data);
     } catch (error) {
       console.log(error);
@@ -49,74 +59,85 @@ export default function LoginForm() {
     }
   };
   return (
-    <section className="w-full">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-sm font-medium">Email</FormLabel>
-                <FormControl>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                      <Mail className="w-4 h-4" />
-                    </span>
-                    <Input
-                      placeholder="tu@email.com"
-                      className="pl-10 h-11 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-1 focus:ring-primary"
-                      {...field}
-                    />
-                  </div>
-                </FormControl>
-                <FormMessage className="text-xs text-red-500" />
-              </FormItem>
-            )}
-          />
+    <>
+      <section className="w-full">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm font-medium">Email</FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                        <Mail className="w-4 h-4" />
+                      </span>
+                      <Input
+                        placeholder="tu@email.com"
+                        className="pl-10 h-11 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-1 focus:ring-primary"
+                        {...field}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage className="text-xs text-red-500" />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-sm font-medium">
-                  Contraseña
-                </FormLabel>
-                <FormControl>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                      <Lock className="w-4 h-4" />
-                    </span>
-                    <Input
-                      type="password"
-                      placeholder="********"
-                      className="pl-10 h-11 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-1 focus:ring-primary"
-                      {...field}
-                    />
-                  </div>
-                </FormControl>
-                <FormMessage className="text-xs text-red-500" />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-sm font-medium">
+                    Contraseña
+                  </FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                        <Lock className="w-4 h-4" />
+                      </span>
+                      <Input
+                        type="password"
+                        placeholder="********"
+                        className="pl-10 h-11 rounded-lg transition-all duration-200 focus:ring-2 focus:ring-offset-1 focus:ring-primary"
+                        {...field}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage className="text-xs text-red-500" />
+                </FormItem>
+              )}
+            />
 
-          <Button
-            type="submit"
-            className="w-full cursor-pointer h-11"
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <div className="flex items-center justify-center">
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Procesando...
-              </div>
-            ) : (
-              "Iniciar sesión"
-            )}
-          </Button>
-        </form>
-      </Form>
-    </section>
+            <Button
+              type="submit"
+              className="w-full cursor-pointer h-11"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <div className="flex items-center justify-center">
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Procesando...
+                </div>
+              ) : (
+                "Iniciar sesión"
+              )}
+            </Button>
+          </form>
+        </Form>
+      </section>
+      <section>
+        {error && (
+          <Alert variant="destructive">
+            <AlertCircleIcon className="h-4 w-4" />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+      </section>
+    </>
   );
 }
