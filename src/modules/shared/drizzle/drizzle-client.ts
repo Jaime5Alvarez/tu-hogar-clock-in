@@ -1,23 +1,23 @@
-import { drizzle, PostgresJsDatabase } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
+import { NeonHttpDatabase } from "drizzle-orm/neon-http";
+import { neon, NeonQueryFunction } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/neon-http";
 
 import * as schema from "@/modules/shared/drizzle/schema";
 import { DATABASE_URL } from "@/config/server-constants";
 
 class DrizzleClient {
-  private static instance: PostgresJsDatabase<typeof schema>;
-  private static client: postgres.Sql;
+  private static instance: NeonHttpDatabase<typeof schema>;
+  private static client: NeonQueryFunction<false, false>;
 
   private constructor() {}
 
-  public static getInstance(): PostgresJsDatabase<typeof schema> {
+  public static getInstance(): NeonHttpDatabase<typeof schema> {
     if (!DrizzleClient.instance) {
-      const postgresUrl = DATABASE_URL;
-      if (!postgresUrl) {
+      if (!DATABASE_URL) {
         throw new Error("PostgreSQL URL is not defined");
       }
 
-      DrizzleClient.client = postgres(postgresUrl);
+      DrizzleClient.client = neon(DATABASE_URL);
       DrizzleClient.instance = drizzle(DrizzleClient.client, {
         schema: schema,
       });
@@ -26,6 +26,6 @@ class DrizzleClient {
   }
 }
 
-export function FactoryDrizzleClient(): PostgresJsDatabase<typeof schema> {
+export function FactoryDrizzleClient(): NeonHttpDatabase<typeof schema> {
   return DrizzleClient.getInstance();
 }
