@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     if (!clockType) {
       return NextResponse.json(
         { error: "Missing clock type" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -35,11 +35,11 @@ export async function POST(request: NextRequest) {
           print:
             "No se ha registrado ninguna entrada, por favor registre una entrada antes de registrar una salida",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    if (!lastClockIn || !lastClockIn.clockOutId) {
+    if (!lastClockIn || lastClockIn.clockOutId) {
       const clockInId = v4();
       await clockingUseCase.createClockIn({
         id: clockInId,
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
         createdAt,
         notes,
       });
-      await clockingUseCase.closeClockIn(lastClockIn.id);
+      await clockingUseCase.closeClockIn(lastClockIn.id, clockOutId);
 
       return NextResponse.json({
         type: "out",
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
     console.error("Error processing clocking:", error);
     return NextResponse.json(
       { error: "Error processing clocking" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

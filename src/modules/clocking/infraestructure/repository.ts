@@ -43,9 +43,12 @@ class ClockingRepository implements IClockingRepository {
     }
   }
 
-  async closeClockIn(clockOutId: string): Promise<void> {
+  async closeClockIn(clockInId: string, clockOutId: string): Promise<void> {
     try {
-      await this.db.update(schema.clockIn).set({ clockOutId }).where(eq(schema.clockIn.id, clockOutId));
+      await this.db
+        .update(schema.clockIn)
+        .set({ clockOutId })
+        .where(eq(schema.clockIn.id, clockInId));
       return;
     } catch (error) {
       throw new Error("Error closing clock in", { cause: error });

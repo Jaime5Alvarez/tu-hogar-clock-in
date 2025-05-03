@@ -1,13 +1,13 @@
 import { auth } from "@/lib/auth";
 
 const createNewSimpleUser = async ({
-    email,
-    password,
-    name,
+  email,
+  password,
+  name,
 }: {
-    email: string;
-    password: string;
-    name: string;
+  email: string;
+  password: string;
+  name: string;
 }) => {
   try {
     const user = await auth.api.signUpEmail({
@@ -15,7 +15,7 @@ const createNewSimpleUser = async ({
         email,
         password,
         name,
-      }
+      },
     });
 
     console.log(user);
@@ -25,7 +25,7 @@ const createNewSimpleUser = async ({
 };
 
 createNewSimpleUser({
-    email: "jaime5alvarez5h@gmail.com",
-    password: "zwinito-gordito-jugosito",
-    name: "Jaime Alvarez",
+  email: "jaime5alvarez5h@gmail.com",
+  password: "zwinito-gordito-jugosito",
+  name: "Jaime Alvarez",
 });

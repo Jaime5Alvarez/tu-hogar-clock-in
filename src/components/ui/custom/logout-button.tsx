@@ -16,7 +16,12 @@ export const LogoutButton = () => {
   };
   return (
     <BetterTooltip content="Logout">
-      <Button variant="ghost" className="cursor-pointer" size="icon" onClick={() => handleSignOut()}>
+      <Button
+        variant="ghost"
+        className="cursor-pointer"
+        size="icon"
+        onClick={() => handleSignOut()}
+      >
         <LogOut className="size-4" />
       </Button>
     </BetterTooltip>

@@ -1,5 +1,10 @@
 import { Card } from "@/components/ui/card";
-import { CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import LoginForm from "@/app/login/page-components/login-form";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
@@ -8,9 +13,9 @@ export default async function Login() {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
-  
+
   if (session) {
-    redirect("/")
+    redirect("/");
   }
 
   return (

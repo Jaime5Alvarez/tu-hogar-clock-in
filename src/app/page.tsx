@@ -63,11 +63,11 @@ export default function Home() {
     if (values.clockType === "") {
       form.setError("clockType", {
         type: "manual",
-        message: "Debes seleccionar un tipo de fichaje"
+        message: "Debes seleccionar un tipo de fichaje",
       });
       return;
     }
-    
+
     setShowSuccess(false);
     setShowError(false);
     setIsLoading(true);
@@ -102,7 +102,6 @@ export default function Home() {
         </CardHeader>
         <CardContent>
           <div className="flex flex-col space-y-6">
-
             <div className="space-y-2 flex flex-col items-center">
               <div className="text-center text-3xl font-medium">
                 {currentTime ? (
@@ -148,13 +147,19 @@ export default function Home() {
                         >
                           <div className="flex items-center space-x-2">
                             <RadioGroupItem value="in" id="in" />
-                            <label htmlFor="in" className="text-sm font-medium leading-none cursor-pointer">
+                            <label
+                              htmlFor="in"
+                              className="text-sm font-medium leading-none cursor-pointer"
+                            >
                               Entrada
                             </label>
                           </div>
                           <div className="flex items-center space-x-2">
                             <RadioGroupItem value="out" id="out" />
-                            <label htmlFor="out" className="text-sm font-medium leading-none cursor-pointer">
+                            <label
+                              htmlFor="out"
+                              className="text-sm font-medium leading-none cursor-pointer"
+                            >
                               Salida
                             </label>
                           </div>
@@ -182,7 +187,11 @@ export default function Home() {
                   )}
                 />
 
-                <Button type="submit" className="w-full cursor-pointer" disabled={isLoading}>
+                <Button
+                  type="submit"
+                  className="w-full cursor-pointer"
+                  disabled={isLoading}
+                >
                   {isLoading ? (
                     <div className="flex items-center justify-center">
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />

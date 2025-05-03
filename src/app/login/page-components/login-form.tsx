@@ -18,7 +18,6 @@ import { AlertCircleIcon, Loader2, Lock, Mail } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
-
 const formSchema = z.object({
   email: z.string().email({
     message: "Email inválido.",

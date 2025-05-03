@@ -4,3 +4,4 @@
 - Create clock in feature
 - Create table with all the registers
 - Make theme dark and light
+- poner rollback en drizzle

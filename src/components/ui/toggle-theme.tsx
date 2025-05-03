@@ -6,11 +6,7 @@ import { useTheme } from "next-themes";
 import BetterTooltip from "@/components/ui/better-tooltip";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-export function ToggleTheme({
-  className,
-}: {
-  className?: string;
-}) {
+export function ToggleTheme({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme();
 
   return (
