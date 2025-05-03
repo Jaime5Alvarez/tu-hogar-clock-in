@@ -20,6 +20,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Tu hogar Clock In",
   description: "Clock In",
+  manifest: "/manifest.json",
 };
 
 export default async function RootLayout({
