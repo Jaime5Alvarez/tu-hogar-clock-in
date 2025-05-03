@@ -41,6 +41,7 @@ export default function Home() {
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -70,20 +71,26 @@ export default function Home() {
 
     setShowSuccess(false);
     setShowError(false);
+    setErrorMessage("");
     setIsLoading(true);
     try {
       const response = await fetch("/api/v1/clock", {
         method: "POST",
         body: JSON.stringify(values),
       });
+      
       if (response.ok) {
         setShowSuccess(true);
         form.reset();
       } else {
+        const errorData = await response.json();
+        setErrorMessage(errorData.message || "Error al registrar el fichaje, por favor intente nuevamente.");
         setShowError(true);
       }
     } catch (error) {
       console.error(error);
+      setErrorMessage("Error al conectar con el servidor, por favor intente nuevamente.");
+      setShowError(true);
     } finally {
       setIsLoading(false);
     }
@@ -213,7 +220,7 @@ export default function Home() {
           )}
           {showError && (
             <div className="text-center text-sm p-2 rounded-md bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 w-full">
-              Error al registrar el fichaje, por favor intente nuevamente.
+              {errorMessage}
             </div>
           )}
         </CardFooter>

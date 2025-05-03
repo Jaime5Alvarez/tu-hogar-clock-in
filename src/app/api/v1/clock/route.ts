@@ -32,8 +32,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           error: "No clock in found",
-          print:
-            "No se ha registrado ninguna entrada, por favor registre una entrada antes de registrar una salida",
+          message: "No se ha registrado ninguna entrada, por favor registre una entrada antes de registrar una salida"
         },
         { status: 400 },
       );
