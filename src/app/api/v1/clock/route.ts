@@ -14,54 +14,46 @@ export async function POST(request: NextRequest) {
     }
 
     // Obtener datos de la solicitud
-    const { type, notes, clockInId } = await request.json();
-    
-    // Validar tipo de operación
-    if (!type || (type !== "in" && type !== "out")) {
-      return NextResponse.json(
-        { error: "Se requiere el tipo de operación (in/out)" },
-        { status: 400 }
-      );
-    }
-
-    const clockingUseCase = FactoryClockingUseCase();
+    const { notes } = await request.json();
     const userId = session.user.id;
+    const clockingUseCase = FactoryClockingUseCase();
     const createdAt = new Date().toISOString();
 
-    // Manejar según el tipo de operación
-    if (type === "in") {
-      // Registro de entrada
+    // Verificar si el usuario tiene un fichaje de entrada abierto
+    const lastOpenClockIn = await clockingUseCase.getLastOpenClockIn(userId);
+
+    // Determinar automáticamente si es entrada o salida
+    if (!lastOpenClockIn) {
+      // No hay entradas abiertas, por lo tanto es un CLOCK IN
+      const clockInId = v4();
       await clockingUseCase.createClockIn({
-        id: v4(),
+        id: clockInId,
         userId,
         createdAt,
         notes,
       });
 
-      return NextResponse.json({ 
+      return NextResponse.json({
+        type: "in",
         message: "Entrada registrada correctamente",
-        timestamp: createdAt
+        timestamp: createdAt,
+        id: clockInId
       });
     } else {
-      // Registro de salida
-      if (!clockInId) {
-        return NextResponse.json(
-          { error: "Se requiere el ID de entrada para registrar una salida" },
-          { status: 400 }
-        );
-      }
-
+      // Hay una entrada abierta, por lo tanto es un CLOCK OUT
       await clockingUseCase.createClockOut({
         id: v4(),
         userId,
-        clockInId,
+        clockInId: lastOpenClockIn.id,
         createdAt,
         notes,
       });
 
-      return NextResponse.json({ 
+      return NextResponse.json({
+        type: "out",
         message: "Salida registrada correctamente",
-        timestamp: createdAt
+        timestamp: createdAt,
+        clockInId: lastOpenClockIn.id
       });
     }
   } catch (error) {

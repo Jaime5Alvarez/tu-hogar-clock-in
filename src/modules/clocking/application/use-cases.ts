@@ -12,6 +12,10 @@ class ClockingUseCase implements IClockingUseCase {
   async createClockOut(clockOut: ClockOut): Promise<void> {
     return await this.clockingRepository.createClockOut(clockOut);
   }
+
+  async getLastOpenClockIn(userId: string): Promise<ClockIn | null> {
+    return await this.clockingRepository.getLastOpenClockIn(userId);
+  }
 }
 
 export function FactoryClockingUseCase(): IClockingUseCase {
