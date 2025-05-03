@@ -3,6 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { ToggleTheme } from "@/components/ui/toggle-theme";
+import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
+import { LogoutButton } from "@/components/ui/custom/logout-button";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,11 +22,15 @@ export const metadata: Metadata = {
   description: "Clock In",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
   return (
     <html lang="es" suppressHydrationWarning>
       <body
@@ -36,7 +43,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 justify-between border-b">
-            <ToggleTheme  className="ml-auto mr-4"/>
+          <div className="ml-auto mr-4">
+            <ToggleTheme/>
+            {session && <LogoutButton />}
+          </div>
           </header>
 
           {children}

@@ -45,6 +45,7 @@ export default function LoginForm() {
       const { data, error } = await authClient.signIn.email({
         email: values.email,
         password: values.password,
+        callbackURL: "/",
       });
       if (error) {
         setError("Contraseña o email incorrectos");

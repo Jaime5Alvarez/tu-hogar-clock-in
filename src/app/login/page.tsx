@@ -1,9 +1,17 @@
 import { Card } from "@/components/ui/card";
 import { CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import LoginForm from "@/app/login/page-components/login-form";
-
-export default function Login() {
-
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+export default async function Login() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  
+  if (session) {
+    redirect("/")
+  }
 
   return (
     <main className="flex items-center justify-center min-h-screen bg-background p-4">
