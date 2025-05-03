@@ -1,15 +1,34 @@
 "use client";
 
-import { useState } from "react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const formSchema = z.object({
   notes: z.string().optional(),
@@ -18,7 +37,16 @@ const formSchema = z.object({
 export default function Home() {
   const [isClockingIn, setIsClockingIn] = useState(true);
   const [clockedStatus, setClockedStatus] = useState<null | "in" | "out">(null);
-  
+  const [currentTime, setCurrentTime] = useState<Date | null>(null);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -45,31 +73,51 @@ export default function Home() {
         <CardContent>
           <div className="flex flex-col space-y-6">
             <div className="grid grid-cols-2 gap-4">
-              <Button 
+              <Button
                 variant={isClockingIn ? "default" : "outline"}
                 onClick={() => setIsClockingIn(true)}
               >
                 Entrada
               </Button>
-              <Button 
+              <Button
                 variant={!isClockingIn ? "default" : "outline"}
                 onClick={() => setIsClockingIn(false)}
               >
                 Salida
               </Button>
             </div>
-            
-            <div className="space-y-2">
-              <div className="text-center text-lg font-medium">
-                {new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+
+            <div className="space-y-2 flex flex-col items-center">
+              <div className="text-center text-3xl font-medium">
+                {currentTime ? (
+                  currentTime.toLocaleTimeString("es-ES", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                  })
+                ) : (
+                  <Skeleton className="w-40 h-10" />
+                )}
               </div>
               <div className="text-center text-sm text-muted-foreground">
-                {new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                {currentTime ? (
+                  currentTime.toLocaleDateString("es-ES", {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })
+                ) : (
+                  <Skeleton className="w-52 h-10" />
+                )}
               </div>
             </div>
 
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
                 <FormField
                   control={form.control}
                   name="notes"
@@ -77,13 +125,16 @@ export default function Home() {
                     <FormItem>
                       <FormLabel>Notas (opcional)</FormLabel>
                       <FormControl>
-                        <Input placeholder="Añade alguna nota sobre tu registro" {...field} />
+                        <Input
+                          placeholder="Añade alguna nota sobre tu registro"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                
+
                 <Button type="submit" className="w-full">
                   {isClockingIn ? "Registrar Entrada" : "Registrar Salida"}
                 </Button>
@@ -94,12 +145,14 @@ export default function Home() {
         <CardFooter className="flex justify-center">
           {clockedStatus && (
             <div className="text-center text-sm p-2 rounded-md bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 w-full">
-              {clockedStatus === "in" ? "¡Entrada registrada con éxito!" : "¡Salida registrada con éxito!"}
+              {clockedStatus === "in"
+                ? "¡Entrada registrada con éxito!"
+                : "¡Salida registrada con éxito!"}
             </div>
           )}
         </CardFooter>
       </Card>
-      
+
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
