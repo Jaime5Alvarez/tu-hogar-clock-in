@@ -1,0 +1,6 @@
+- make auth sistem
+- deploy on vercel
+- create PWA
+- Create clock in feature
+- Create table with all the registers
+- Make theme dark and light
