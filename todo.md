@@ -1,7 +1,7 @@
-- make auth sistem
-- deploy on vercel
-- create PWA
-- Create clock in feature
-- Create table with all the registers
-- Make theme dark and light
-- poner rollback en drizzle
+- [x] make auth sistem
+- [] deploy on vercel
+- [x] create PWA
+- [x] Create clock in feature
+- [] Create table with all the registers
+- [x] Make theme dark and light
+- [] poner rollback en drizzle
