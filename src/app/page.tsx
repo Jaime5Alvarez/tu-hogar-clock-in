@@ -35,9 +35,9 @@ const formSchema = z.object({
 });
 
 export default function Home() {
-  const [isClockingIn, setIsClockingIn] = useState(true);
-  const [clockedStatus, setClockedStatus] = useState<null | "in" | "out">(null);
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -55,8 +55,12 @@ export default function Home() {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
-    setClockedStatus(isClockingIn ? "in" : "out");
+    setShowSuccess(false);
+    try {
+      setShowSuccess(true);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -64,7 +68,7 @@ export default function Home() {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-2xl text-center">
-            {isClockingIn ? "Registrar Entrada" : "Registrar Salida"}
+            Registrar fichaje
           </CardTitle>
           <CardDescription className="text-center">
             Sistema de control de horas de trabajo
@@ -72,20 +76,6 @@ export default function Home() {
         </CardHeader>
         <CardContent>
           <div className="flex flex-col space-y-6">
-            <div className="grid grid-cols-2 gap-4">
-              <Button
-                variant={isClockingIn ? "default" : "outline"}
-                onClick={() => setIsClockingIn(true)}
-              >
-                Entrada
-              </Button>
-              <Button
-                variant={!isClockingIn ? "default" : "outline"}
-                onClick={() => setIsClockingIn(false)}
-              >
-                Salida
-              </Button>
-            </div>
 
             <div className="space-y-2 flex flex-col items-center">
               <div className="text-center text-3xl font-medium">
@@ -136,18 +126,21 @@ export default function Home() {
                 />
 
                 <Button type="submit" className="w-full">
-                  {isClockingIn ? "Registrar Entrada" : "Registrar Salida"}
+                  Registrar fichaje
                 </Button>
               </form>
             </Form>
           </div>
         </CardContent>
         <CardFooter className="flex justify-center">
-          {clockedStatus && (
+          {showSuccess && (
             <div className="text-center text-sm p-2 rounded-md bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 w-full">
-              {clockedStatus === "in"
-                ? "¡Entrada registrada con éxito!"
-                : "¡Salida registrada con éxito!"}
+              Fichaje registrado con éxito
+            </div>
+          )}
+          {showError && (
+            <div className="text-center text-sm p-2 rounded-md bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 w-full">
+              Error al registrar el fichaje, por favor intente nuevamente.
             </div>
           )}
         </CardFooter>
