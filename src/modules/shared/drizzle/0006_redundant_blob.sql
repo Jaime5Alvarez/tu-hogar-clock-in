@@ -1,0 +1,1 @@
+ALTER TABLE "clock_in" ADD CONSTRAINT "clock_in_clock_out_id_unique" UNIQUE("clock_out_id");

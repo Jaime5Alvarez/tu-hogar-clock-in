@@ -33,6 +33,7 @@ import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
   notes: z.string().optional(),
+  clockType: z.enum(["in", "out", ""]),
 });
 
 export default function Home() {
@@ -53,6 +54,7 @@ export default function Home() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       notes: undefined,
+      clockType: "",
     },
   });
 

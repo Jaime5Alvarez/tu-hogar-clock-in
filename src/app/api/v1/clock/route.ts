@@ -28,6 +28,17 @@ export async function POST(request: NextRequest) {
 
     const lastClockIn = await clockingUseCase.getLastClockIn(userId);
 
+    if (clockType === "out" && lastClockIn.clockOutId) {
+      return NextResponse.json(
+        {
+          error: "No clock in found",
+          print:
+            "No se ha registrado ninguna entrada, por favor registre una entrada antes de registrar una salida",
+        },
+        { status: 400 }
+      );
+    }
+
     if (!lastClockIn.clockOutId) {
       const clockInId = v4();
       await clockingUseCase.createClockIn({
