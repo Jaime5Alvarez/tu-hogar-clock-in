@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!lastClockIn || lastClockIn.clockOutId) {
+    if (clockType === "in") {
       const clockInId = v4();
       await clockingUseCase.createClockIn({
         id: clockInId,
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
         timestamp: createdAt,
         id: clockInId,
       });
-    } else {
+    }
       const clockOutId = v4();
       await clockingUseCase.createClockOut({
         id: clockOutId,
@@ -71,7 +71,8 @@ export async function POST(request: NextRequest) {
         timestamp: createdAt,
         clockOutId: clockOutId,
       });
-    }
+    
+
   } catch (error) {
     console.error("Error processing clocking:", error);
     return NextResponse.json(
