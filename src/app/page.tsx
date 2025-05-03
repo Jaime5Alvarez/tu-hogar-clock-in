@@ -76,7 +76,10 @@ export default function Home() {
     try {
       const response = await fetch("/api/v1/clock", {
         method: "POST",
-        body: JSON.stringify(values),
+        body: JSON.stringify({
+          notes: values.notes ? values.notes : null,
+          clockType: values.clockType,
+        }),
       });
       
       if (response.ok) {

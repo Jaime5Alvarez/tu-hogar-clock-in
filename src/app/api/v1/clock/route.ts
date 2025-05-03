@@ -13,12 +13,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { notes, clockType }: { notes: string; clockType: ClockType } =
+    const { notes, clockType }: { notes: string | null; clockType: ClockType } =
       await request.json();
     if (!clockType) {
       return NextResponse.json(
         { error: "Missing clock type" },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -32,9 +32,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           error: "No clock in found",
-          message: "No se ha registrado ninguna entrada, por favor registre una entrada antes de registrar una salida"
+          message:
+            "No se ha registrado ninguna entrada, por favor registre una entrada antes de registrar una salida",
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -75,7 +76,7 @@ export async function POST(request: NextRequest) {
     console.error("Error processing clocking:", error);
     return NextResponse.json(
       { error: "Error processing clocking" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
