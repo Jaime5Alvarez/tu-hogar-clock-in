@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!lastClockIn.clockOutId) {
+    if (!lastClockIn || !lastClockIn.clockOutId) {
       const clockInId = v4();
       await clockingUseCase.createClockIn({
         id: clockInId,
