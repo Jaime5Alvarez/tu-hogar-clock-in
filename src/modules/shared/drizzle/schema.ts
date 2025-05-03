@@ -68,6 +68,8 @@ export const clockIn = pgTable("clock_in", {
   userId: text("user_id")
     .notNull()
     .references(() => user.id),
+  clockOutId: uuid("clock_out_id")
+    .references(() => clockOut.id),
   createdAt: timestamp("created_at", { mode: "string" }).notNull(),
   notes: text("notes"),
 });
@@ -77,9 +79,6 @@ export const clockOut = pgTable("clock_out", {
   userId: text("user_id")
     .notNull()
     .references(() => user.id),
-  clockInId: uuid("clock_in_id")
-    .notNull()
-    .references(() => clockIn.id),
   createdAt: timestamp("created_at", { mode: "string" }).notNull(),
   notes: text("notes"),
 });

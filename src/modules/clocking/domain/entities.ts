@@ -5,3 +5,4 @@ export type ClockIn = InferSelectModel<typeof clockIn>;
 
 export type ClockOut = InferSelectModel<typeof clockOut>;
 
+export type ClockType = "in" | "out";

@@ -29,6 +29,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
   notes: z.string().optional(),
@@ -38,6 +39,7 @@ export default function Home() {
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -50,16 +52,29 @@ export default function Home() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      notes: "",
+      notes: undefined,
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setShowSuccess(false);
+    setShowError(false);
+    setIsLoading(true);
     try {
-      setShowSuccess(true);
+      const response = await fetch("/api/v1/clock", {
+        method: "POST",
+        body: JSON.stringify(values),
+      });
+      if (response.ok) {
+        setShowSuccess(true);
+        form.reset();
+      } else {
+        setShowError(true);
+      }
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -125,8 +140,15 @@ export default function Home() {
                   )}
                 />
 
-                <Button type="submit" className="w-full">
-                  Registrar fichaje
+                <Button type="submit" className="w-full cursor-pointer" disabled={isLoading}>
+                  {isLoading ? (
+                    <div className="flex items-center justify-center">
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      <span>Registrando...</span>
+                    </div>
+                  ) : (
+                    "Registrar fichaje"
+                  )}
                 </Button>
               </form>
             </Form>

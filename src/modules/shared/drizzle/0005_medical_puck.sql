@@ -1,0 +1,1 @@
+ALTER TABLE "clock_in" ALTER COLUMN "clock_out_id" DROP NOT NULL;

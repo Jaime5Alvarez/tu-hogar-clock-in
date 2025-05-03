@@ -2,10 +2,10 @@ import { auth } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
 import { FactoryClockingUseCase } from "@/modules/clocking/application/use-cases";
 import { v4 } from "uuid";
+import { ClockType } from "@/modules/clocking/domain/entities";
 
 export async function POST(request: NextRequest) {
   try {
-    // Verificar autenticación
     const session = await auth.api.getSession({
       headers: request.headers,
     });
@@ -13,53 +13,58 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Obtener datos de la solicitud
-    const { notes } = await request.json();
+    const { notes, clockType }: { notes: string; clockType: ClockType } =
+      await request.json();
+    if (!clockType) {
+      return NextResponse.json(
+        { error: "Missing clock type" },
+        { status: 400 }
+      );
+    }
+
     const userId = session.user.id;
     const clockingUseCase = FactoryClockingUseCase();
     const createdAt = new Date().toISOString();
 
-    // Verificar si el usuario tiene un fichaje de entrada abierto
-    const lastOpenClockIn = await clockingUseCase.getLastOpenClockIn(userId);
+    const lastClockIn = await clockingUseCase.getLastClockIn(userId);
 
-    // Determinar automáticamente si es entrada o salida
-    if (!lastOpenClockIn) {
-      // No hay entradas abiertas, por lo tanto es un CLOCK IN
+    if (!lastClockIn.clockOutId) {
       const clockInId = v4();
       await clockingUseCase.createClockIn({
         id: clockInId,
         userId,
         createdAt,
         notes,
+        clockOutId: null,
       });
 
       return NextResponse.json({
         type: "in",
-        message: "Entrada registrada correctamente",
+        message: "Clock in registered successfully",
         timestamp: createdAt,
-        id: clockInId
+        id: clockInId,
       });
     } else {
-      // Hay una entrada abierta, por lo tanto es un CLOCK OUT
+      const clockOutId = v4();
       await clockingUseCase.createClockOut({
-        id: v4(),
+        id: clockOutId,
         userId,
-        clockInId: lastOpenClockIn.id,
         createdAt,
         notes,
       });
+      await clockingUseCase.closeClockIn(lastClockIn.id);
 
       return NextResponse.json({
         type: "out",
-        message: "Salida registrada correctamente",
+        message: "Clock out registered successfully",
         timestamp: createdAt,
-        clockInId: lastOpenClockIn.id
+        clockOutId: clockOutId,
       });
     }
   } catch (error) {
-    console.error("Error al procesar el fichaje:", error);
+    console.error("Error processing clocking:", error);
     return NextResponse.json(
-      { error: "Error al procesar el fichaje" },
+      { error: "Error processing clocking" },
       { status: 500 }
     );
   }
