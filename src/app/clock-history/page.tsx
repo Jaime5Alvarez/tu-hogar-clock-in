@@ -32,7 +32,7 @@ import {
 import { calculateTotalTime } from "@/lib/utils";
 
 // Definición del tipo para los registros de fichaje
-export type ClockRecord = {
+type ClockRecord = {
   clockInId: string;
   clockInTime: string;
   clockOutId: string | null;
@@ -41,126 +41,6 @@ export type ClockRecord = {
   clockInNotes: string | null;
   clockOutNotes: string | null;
 };
-
-// Definición de columnas para la tabla
-export const columns: ColumnDef<ClockRecord>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "clockInTime",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Entrada
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => {
-      const date = new Date(row.getValue("clockInTime"));
-      const formatted = new Intl.DateTimeFormat("es-ES", {
-        dateStyle: "short",
-        timeStyle: "short",
-      }).format(date);
-      return <div>{formatted}</div>;
-    },
-  },
-  {
-    accessorKey: "clockOutTime",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Salida
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => {
-      const value = row.getValue("clockOutTime");
-      if (!value) return <div>Pendiente</div>;
-
-      const date = new Date(value as string);
-      const formatted = new Intl.DateTimeFormat("es-ES", {
-        dateStyle: "short",
-        timeStyle: "short",
-      }).format(date);
-      return <div>{formatted}</div>;
-    },
-  },
-  {
-    accessorKey: "totalTime",
-    header: "Tiempo total",
-    cell: ({ row }) => {
-      const clockInTime = row.getValue("clockInTime") as string;
-      const clockOutTime = row.getValue("clockOutTime") as string | null;
-      return <div>{calculateTotalTime(clockInTime, clockOutTime)}</div>;
-    },
-  },
-  {
-    accessorKey: "clockInNotes",
-    header: "Notas de entrada",
-    cell: ({ row }) => <div>{row.getValue("clockInNotes") || "-"}</div>,
-  },
-  {
-    accessorKey: "clockOutNotes",
-    header: "Notas de salida",
-    cell: ({ row }) => <div>{row.getValue("clockOutNotes") || "-"}</div>,
-  },
-  //   {
-  //     id: "actions",
-  //     enableHiding: false,
-  //     cell: ({ row }) => {
-  //       const record = row.original
-
-  //       return (
-  //         <DropdownMenu>
-  //           <DropdownMenuTrigger asChild>
-  //             <Button variant="ghost" className="h-8 w-8 p-0">
-  //               <span className="sr-only">Abrir menú</span>
-  //               <MoreHorizontal className="h-4 w-4" />
-  //             </Button>
-  //           </DropdownMenuTrigger>
-  //           <DropdownMenuContent align="end">
-  //             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-  //             <DropdownMenuItem
-  //               onClick={() => navigator.clipboard.writeText(record.clockInId)}
-  //             >
-  //               Copiar ID de entrada
-  //             </DropdownMenuItem>
-  //             <DropdownMenuSeparator />
-  //             <DropdownMenuItem>Ver detalles</DropdownMenuItem>
-  //           </DropdownMenuContent>
-  //         </DropdownMenu>
-  //       )
-  //     },
-  //   },
-];
 
 export default function ClockHistory() {
   const [data, setData] = React.useState<ClockRecord[]>([]);
@@ -174,6 +54,126 @@ export default function ClockHistory() {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+    
+  // Definición de columnas para la tabla
+  const columns: ColumnDef<ClockRecord>[] = [
+    {
+      id: "select",
+      header: ({ table }) => (
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && "indeterminate")
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: "clockInTime",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Entrada
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        const date = new Date(row.getValue("clockInTime"));
+        const formatted = new Intl.DateTimeFormat("es-ES", {
+          dateStyle: "short",
+          timeStyle: "short",
+        }).format(date);
+        return <div>{formatted}</div>;
+      },
+    },
+    {
+      accessorKey: "clockOutTime",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Salida
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        const value = row.getValue("clockOutTime");
+        if (!value) return <div>Pendiente</div>;
+
+        const date = new Date(value as string);
+        const formatted = new Intl.DateTimeFormat("es-ES", {
+          dateStyle: "short",
+          timeStyle: "short",
+        }).format(date);
+        return <div>{formatted}</div>;
+      },
+    },
+    {
+      accessorKey: "totalTime",
+      header: "Tiempo total",
+      cell: ({ row }) => {
+        const clockInTime = row.getValue("clockInTime") as string;
+        const clockOutTime = row.getValue("clockOutTime") as string | null;
+        return <div>{calculateTotalTime(clockInTime, clockOutTime)}</div>;
+      },
+    },
+    {
+      accessorKey: "clockInNotes",
+      header: "Notas de entrada",
+      cell: ({ row }) => <div>{row.getValue("clockInNotes") || "-"}</div>,
+    },
+    {
+      accessorKey: "clockOutNotes",
+      header: "Notas de salida",
+      cell: ({ row }) => <div>{row.getValue("clockOutNotes") || "-"}</div>,
+    },
+    //   {
+    //     id: "actions",
+    //     enableHiding: false,
+    //     cell: ({ row }) => {
+    //       const record = row.original
+
+    //       return (
+    //         <DropdownMenu>
+    //           <DropdownMenuTrigger asChild>
+    //             <Button variant="ghost" className="h-8 w-8 p-0">
+    //               <span className="sr-only">Abrir menú</span>
+    //               <MoreHorizontal className="h-4 w-4" />
+    //             </Button>
+    //           </DropdownMenuTrigger>
+    //           <DropdownMenuContent align="end">
+    //             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+    //             <DropdownMenuItem
+    //               onClick={() => navigator.clipboard.writeText(record.clockInId)}
+    //             >
+    //               Copiar ID de entrada
+    //             </DropdownMenuItem>
+    //             <DropdownMenuSeparator />
+    //             <DropdownMenuItem>Ver detalles</DropdownMenuItem>
+    //           </DropdownMenuContent>
+    //         </DropdownMenu>
+    //       )
+    //     },
+    //   },
+  ];
 
   // Función para cargar los datos del historial de fichajes
   React.useEffect(() => {
