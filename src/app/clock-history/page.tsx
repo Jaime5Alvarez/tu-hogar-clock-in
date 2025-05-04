@@ -35,6 +35,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { calculateTotalTime } from "@/lib/utils"
 
 // Definición del tipo para los registros de fichaje
 export type ClockRecord = {
@@ -47,22 +48,6 @@ export type ClockRecord = {
   clockOutNotes: string | null
 }
 
-// Función para calcular el tiempo total entre entrada y salida
-const calculateTotalTime = (clockIn: string, clockOut: string | null): string => {
-  if (!clockOut) return "-";
-  
-  const startTime = new Date(clockIn);
-  const endTime = new Date(clockOut);
-  
-  // Calcular la diferencia en milisegundos
-  const diffMs = endTime.getTime() - startTime.getTime();
-  
-  // Convertir a horas y minutos
-  const hours = Math.floor(diffMs / (1000 * 60 * 60));
-  const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-  
-  return `${hours}h ${minutes}m`;
-};
 
 // Definición de columnas para la tabla
 export const columns: ColumnDef<ClockRecord>[] = [

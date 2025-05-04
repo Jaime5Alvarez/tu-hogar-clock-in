@@ -5,11 +5,11 @@ import ClockingRepository from "../infraestructure/repository";
 class ClockingUseCase implements IClockingUseCase {
   constructor(private readonly clockingRepository: IClockingRepository) {}
 
-  async createClockIn(clockIn: ClockIn): Promise<void> {
+  async createClockIn(clockIn: ClockIn): Promise<ClockIn> {
     return await this.clockingRepository.createClockIn(clockIn);
   }
 
-  async createClockOut(clockOut: ClockOut): Promise<void> {
+  async createClockOut(clockOut: ClockOut): Promise<ClockOut> {
     return await this.clockingRepository.createClockOut(clockOut);
   }
 

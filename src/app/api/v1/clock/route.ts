@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { FactoryClockingUseCase } from "@/modules/clocking/application/use-cases";
 import { v4 } from "uuid";
 import { ClockType } from "@/modules/clocking/domain/entities";
+import { calculateTotalTime } from "@/lib/utils";
 
 export async function POST(request: NextRequest) {
   try {
@@ -57,7 +58,7 @@ export async function POST(request: NextRequest) {
       });
     }
       const clockOutId = v4();
-      await clockingUseCase.createClockOut({
+     const clockOut = await clockingUseCase.createClockOut({
         id: clockOutId,
         userId,
         createdAt,
@@ -67,7 +68,18 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json({
         type: "out",
-        message: "Salida registrada con éxito",
+        message: `Salida registrada con éxito:
+        - Entrada: ${new Date(lastClockIn.createdAt).toLocaleTimeString("es-ES", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        })}
+        - Salida: ${new Date(clockOut.createdAt).toLocaleTimeString("es-ES", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        }) }
+        - Tiempo total: ${calculateTotalTime(lastClockIn.createdAt, clockOut.createdAt)}`,
         timestamp: createdAt,
         clockOutId: clockOutId,
       });

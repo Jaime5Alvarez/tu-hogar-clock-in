@@ -11,19 +11,19 @@ class ClockingRepository implements IClockingRepository {
     this.db = FactoryDrizzleClient();
   }
 
-  async createClockIn(clockIn: ClockIn): Promise<void> {
+  async createClockIn(clockIn: ClockIn): Promise<ClockIn> {
     try {
-      await this.db.insert(schema.clockIn).values(clockIn);
-      return;
+      const [newClockIn] = await this.db.insert(schema.clockIn).values(clockIn).returning();
+      return newClockIn;
     } catch (error) {
       throw new Error("Error creating clock in", { cause: error });
     }
   }
 
-  async createClockOut(clockOut: ClockOut): Promise<void> {
+  async createClockOut(clockOut: ClockOut): Promise<ClockOut> {
     try {
-      await this.db.insert(schema.clockOut).values(clockOut);
-      return;
+      const [newClockOut] = await this.db.insert(schema.clockOut).values(clockOut).returning();
+      return newClockOut;
     } catch (error) {
       throw new Error("Error creating clock out", { cause: error });
     }
