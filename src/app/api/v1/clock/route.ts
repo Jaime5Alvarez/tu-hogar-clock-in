@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     if (!clockType) {
       return NextResponse.json(
         { error: "Missing clock type" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
           message:
             "No se ha registrado ninguna entrada, por favor registre una entrada antes de registrar una salida",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -57,41 +57,43 @@ export async function POST(request: NextRequest) {
         id: clockInId,
       });
     }
-      const clockOutId = v4();
-     const clockOut = await clockingUseCase.createClockOut({
-        id: clockOutId,
-        userId,
-        createdAt,
-        notes,
-      });
-      await clockingUseCase.closeClockIn(lastClockIn.id, clockOutId);
+    const clockOutId = v4();
+    const clockOut = await clockingUseCase.createClockOut({
+      id: clockOutId,
+      userId,
+      createdAt,
+      notes,
+    });
+    await clockingUseCase.closeClockIn(lastClockIn.id, clockOutId);
 
-      return NextResponse.json({
-        type: "out",
-        message: `<div>
+    return NextResponse.json({
+      type: "out",
+      message: `<div>
           <p><strong>Salida registrada con éxito</strong></p>
-          <p style="margin-top: 10px;"><strong>Entrada:</strong> ${new Date(lastClockIn.createdAt).toLocaleTimeString("es-ES", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-        })}</p>
-          <p><strong>Salida:</strong> ${new Date(clockOut.createdAt).toLocaleTimeString("es-ES", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-        })}</p>
+          <p style="margin-top: 10px;"><strong>Entrada:</strong> ${new Date(
+            lastClockIn.createdAt,
+          ).toLocaleTimeString("es-ES", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+          })}</p>
+          <p><strong>Salida:</strong> ${new Date(
+            clockOut.createdAt,
+          ).toLocaleTimeString("es-ES", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+          })}</p>
           <p><strong>Tiempo total:</strong> ${calculateTotalTime(lastClockIn.createdAt, clockOut.createdAt)}</p>
         </div>`,
-        timestamp: createdAt,
-        clockOutId: clockOutId,
-      });
-    
-
+      timestamp: createdAt,
+      clockOutId: clockOutId,
+    });
   } catch (error) {
     console.error("Error processing clocking:", error);
     return NextResponse.json(
       { error: "Error processing clocking" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

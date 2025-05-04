@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     const session = await auth.api.getSession({
       headers: request.headers,
     });
-    
+
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
       .from(schema.clockIn)
       .leftJoin(
         schema.clockOut,
-        eq(schema.clockIn.clockOutId, schema.clockOut.id)
+        eq(schema.clockIn.clockOutId, schema.clockOut.id),
       )
       .where(eq(schema.clockIn.userId, userId))
       .orderBy(desc(schema.clockIn.createdAt));
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
     console.error("Error fetching clock history:", error);
     return NextResponse.json(
       { error: "Error fetching clock history" },
-      { status: 500 }
+      { status: 500 },
     );
   }
-} 
+}

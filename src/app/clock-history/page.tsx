@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -12,11 +12,16 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
-import { ArrowUpDown, ChevronDown, Loader2, MoreHorizontal } from "lucide-react"
+} from "@tanstack/react-table";
+import {
+  ArrowUpDown,
+  ChevronDown,
+  Loader2,
+  MoreHorizontal,
+} from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -25,8 +30,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -34,20 +39,19 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { calculateTotalTime } from "@/lib/utils"
+} from "@/components/ui/table";
+import { calculateTotalTime } from "@/lib/utils";
 
 // Definición del tipo para los registros de fichaje
 export type ClockRecord = {
-  clockInId: string
-  clockInTime: string
-  clockOutId: string | null
-  clockOutTime: string | null
-  totalTime: string | null
-  clockInNotes: string | null
-  clockOutNotes: string | null
-}
-
+  clockInId: string;
+  clockInTime: string;
+  clockOutId: string | null;
+  clockOutTime: string | null;
+  totalTime: string | null;
+  clockInNotes: string | null;
+  clockOutNotes: string | null;
+};
 
 // Definición de columnas para la tabla
 export const columns: ColumnDef<ClockRecord>[] = [
@@ -84,15 +88,15 @@ export const columns: ColumnDef<ClockRecord>[] = [
           Entrada
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => {
-      const date = new Date(row.getValue("clockInTime"))
-      const formatted = new Intl.DateTimeFormat('es-ES', {
-        dateStyle: 'short',
-        timeStyle: 'short'
-      }).format(date)
-      return <div>{formatted}</div>
+      const date = new Date(row.getValue("clockInTime"));
+      const formatted = new Intl.DateTimeFormat("es-ES", {
+        dateStyle: "short",
+        timeStyle: "short",
+      }).format(date);
+      return <div>{formatted}</div>;
     },
   },
   {
@@ -106,18 +110,18 @@ export const columns: ColumnDef<ClockRecord>[] = [
           Salida
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => {
-      const value = row.getValue("clockOutTime")
-      if (!value) return <div>Pendiente</div>
-      
-      const date = new Date(value as string)
-      const formatted = new Intl.DateTimeFormat('es-ES', {
-        dateStyle: 'short',
-        timeStyle: 'short'
-      }).format(date)
-      return <div>{formatted}</div>
+      const value = row.getValue("clockOutTime");
+      if (!value) return <div>Pendiente</div>;
+
+      const date = new Date(value as string);
+      const formatted = new Intl.DateTimeFormat("es-ES", {
+        dateStyle: "short",
+        timeStyle: "short",
+      }).format(date);
+      return <div>{formatted}</div>;
     },
   },
   {
@@ -139,69 +143,74 @@ export const columns: ColumnDef<ClockRecord>[] = [
     header: "Notas de salida",
     cell: ({ row }) => <div>{row.getValue("clockOutNotes") || "-"}</div>,
   },
-//   {
-//     id: "actions",
-//     enableHiding: false,
-//     cell: ({ row }) => {
-//       const record = row.original
+  //   {
+  //     id: "actions",
+  //     enableHiding: false,
+  //     cell: ({ row }) => {
+  //       const record = row.original
 
-//       return (
-//         <DropdownMenu>
-//           <DropdownMenuTrigger asChild>
-//             <Button variant="ghost" className="h-8 w-8 p-0">
-//               <span className="sr-only">Abrir menú</span>
-//               <MoreHorizontal className="h-4 w-4" />
-//             </Button>
-//           </DropdownMenuTrigger>
-//           <DropdownMenuContent align="end">
-//             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-//             <DropdownMenuItem
-//               onClick={() => navigator.clipboard.writeText(record.clockInId)}
-//             >
-//               Copiar ID de entrada
-//             </DropdownMenuItem>
-//             <DropdownMenuSeparator />
-//             <DropdownMenuItem>Ver detalles</DropdownMenuItem>
-//           </DropdownMenuContent>
-//         </DropdownMenu>
-//       )
-//     },
-//   },
-]
+  //       return (
+  //         <DropdownMenu>
+  //           <DropdownMenuTrigger asChild>
+  //             <Button variant="ghost" className="h-8 w-8 p-0">
+  //               <span className="sr-only">Abrir menú</span>
+  //               <MoreHorizontal className="h-4 w-4" />
+  //             </Button>
+  //           </DropdownMenuTrigger>
+  //           <DropdownMenuContent align="end">
+  //             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+  //             <DropdownMenuItem
+  //               onClick={() => navigator.clipboard.writeText(record.clockInId)}
+  //             >
+  //               Copiar ID de entrada
+  //             </DropdownMenuItem>
+  //             <DropdownMenuSeparator />
+  //             <DropdownMenuItem>Ver detalles</DropdownMenuItem>
+  //           </DropdownMenuContent>
+  //         </DropdownMenu>
+  //       )
+  //     },
+  //   },
+];
 
 export default function ClockHistory() {
-  const [data, setData] = React.useState<ClockRecord[]>([])
-  const [loading, setLoading] = React.useState(true)
-  const [error, setError] = React.useState<string | null>(null)
-  
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
+  const [data, setData] = React.useState<ClockRecord[]>([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
+
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    [],
+  );
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = React.useState({});
 
   // Función para cargar los datos del historial de fichajes
   React.useEffect(() => {
     const fetchClockHistory = async () => {
       try {
-        setLoading(true)
-        const response = await fetch('/api/v1/clock/history')
-        
+        setLoading(true);
+        const response = await fetch("/api/v1/clock/history");
+
         if (!response.ok) {
-          throw new Error('Error al cargar el historial de fichajes')
+          throw new Error("Error al cargar el historial de fichajes");
         }
-        
-        const clockHistory = await response.json()
-        setData(clockHistory)
+
+        const clockHistory = await response.json();
+        setData(clockHistory);
       } catch (err) {
-        console.error('Error fetching clock history:', err)
-        setError('No se pudo cargar el historial. Por favor, inténtalo de nuevo.')
+        console.error("Error fetching clock history:", err);
+        setError(
+          "No se pudo cargar el historial. Por favor, inténtalo de nuevo.",
+        );
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
-    
-    fetchClockHistory()
-  }, [])
+    };
+
+    fetchClockHistory();
+  }, []);
 
   const table = useReactTable({
     data,
@@ -220,18 +229,18 @@ export default function ClockHistory() {
       columnVisibility,
       rowSelection,
     },
-  })
+  });
 
   return (
     <div className="max-w-7xl mx-auto py-10">
       <h1 className="text-2xl font-bold mb-4">Historial de Fichajes</h1>
-      
+
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
           {error}
         </div>
       )}
-      
+
       {/* <div className="flex items-center py-4">
         <Input
           placeholder="Filtrar por notas..."
@@ -268,7 +277,7 @@ export default function ClockHistory() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div> */}
-      
+
       {loading ? (
         <div className="flex justify-center items-center h-40">
           <Loader2 className="h-10 w-10 animate-spin" />
@@ -286,7 +295,7 @@ export default function ClockHistory() {
                           ? null
                           : flexRender(
                               header.column.columnDef.header,
-                              header.getContext()
+                              header.getContext(),
                             )}
                       </TableHead>
                     ))}
@@ -302,14 +311,20 @@ export default function ClockHistory() {
                     >
                       {row.getVisibleCells().map((cell) => (
                         <TableCell key={cell.id}>
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
                         </TableCell>
                       ))}
                     </TableRow>
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={columns.length} className="h-24 text-center">
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-24 text-center"
+                    >
                       No hay registros disponibles.
                     </TableCell>
                   </TableRow>
@@ -344,5 +359,5 @@ export default function ClockHistory() {
         </>
       )}
     </div>
-  )
+  );
 }

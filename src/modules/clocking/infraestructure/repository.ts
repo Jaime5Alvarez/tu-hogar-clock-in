@@ -13,7 +13,10 @@ class ClockingRepository implements IClockingRepository {
 
   async createClockIn(clockIn: ClockIn): Promise<ClockIn> {
     try {
-      const [newClockIn] = await this.db.insert(schema.clockIn).values(clockIn).returning();
+      const [newClockIn] = await this.db
+        .insert(schema.clockIn)
+        .values(clockIn)
+        .returning();
       return newClockIn;
     } catch (error) {
       throw new Error("Error creating clock in", { cause: error });
@@ -22,7 +25,10 @@ class ClockingRepository implements IClockingRepository {
 
   async createClockOut(clockOut: ClockOut): Promise<ClockOut> {
     try {
-      const [newClockOut] = await this.db.insert(schema.clockOut).values(clockOut).returning();
+      const [newClockOut] = await this.db
+        .insert(schema.clockOut)
+        .values(clockOut)
+        .returning();
       return newClockOut;
     } catch (error) {
       throw new Error("Error creating clock out", { cause: error });
