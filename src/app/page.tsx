@@ -212,9 +212,10 @@ export default function Home() {
         </CardContent>
         <CardFooter className="flex justify-center">
           {successMessage && (
-            <div className="text-center text-sm p-2 rounded-md bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 w-full">
-              {successMessage}
-            </div>
+            <div 
+              className="text-center text-sm p-2 rounded-md bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 w-full"
+              dangerouslySetInnerHTML={{ __html: successMessage }}
+            />
           )}
           {errorMessage && (
             <div className="text-center text-sm p-2 rounded-md bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 w-full">

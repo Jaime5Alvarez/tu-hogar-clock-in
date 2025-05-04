@@ -68,18 +68,20 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json({
         type: "out",
-        message: `Salida registrada con éxito:
-        - Entrada: ${new Date(lastClockIn.createdAt).toLocaleTimeString("es-ES", {
+        message: `<div>
+          <p><strong>Salida registrada con éxito</strong></p>
+          <p style="margin-top: 10px;"><strong>Entrada:</strong> ${new Date(lastClockIn.createdAt).toLocaleTimeString("es-ES", {
           hour: "2-digit",
           minute: "2-digit",
           second: "2-digit",
-        })}
-        - Salida: ${new Date(clockOut.createdAt).toLocaleTimeString("es-ES", {
+        })}</p>
+          <p><strong>Salida:</strong> ${new Date(clockOut.createdAt).toLocaleTimeString("es-ES", {
           hour: "2-digit",
           minute: "2-digit",
           second: "2-digit",
-        }) }
-        - Tiempo total: ${calculateTotalTime(lastClockIn.createdAt, clockOut.createdAt)}`,
+        })}</p>
+          <p><strong>Tiempo total:</strong> ${calculateTotalTime(lastClockIn.createdAt, clockOut.createdAt)}</p>
+        </div>`,
         timestamp: createdAt,
         clockOutId: clockOutId,
       });
