@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json({
         type: "in",
-        message: "Clock in registered successfully",
+        message: "Entrada registrada con éxito",
         timestamp: createdAt,
         id: clockInId,
       });
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
 
       return NextResponse.json({
         type: "out",
-        message: "Clock out registered successfully",
+        message: "Salida registrada con éxito",
         timestamp: createdAt,
         clockOutId: clockOutId,
       });

@@ -34,8 +34,7 @@ const formSchema = z.object({
 
 export default function Home() {
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [showError, setShowError] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -64,8 +63,7 @@ export default function Home() {
       return;
     }
 
-    setShowSuccess(false);
-    setShowError(false);
+    setSuccessMessage("");
     setErrorMessage("");
     setIsLoading(true);
     try {
@@ -78,7 +76,8 @@ export default function Home() {
       });
 
       if (response.ok) {
-        setShowSuccess(true);
+        const data = await response.json();
+        setSuccessMessage(data.message);
         form.reset();
       } else {
         const errorData = await response.json();
@@ -86,12 +85,10 @@ export default function Home() {
           errorData.message ||
             "Error al registrar el fichaje, por favor intente nuevamente."
         );
-        setShowError(true);
       }
     } catch (error) {
       console.error(error);
       setErrorMessage("Un error ha ocurrido, por favor intente nuevamente.");
-      setShowError(true);
     } finally {
       setIsLoading(false);
     }
@@ -214,12 +211,12 @@ export default function Home() {
           </div>
         </CardContent>
         <CardFooter className="flex justify-center">
-          {showSuccess && (
+          {successMessage && (
             <div className="text-center text-sm p-2 rounded-md bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 w-full">
-              Fichaje registrado con éxito
+              {successMessage}
             </div>
           )}
-          {showError && (
+          {errorMessage && (
             <div className="text-center text-sm p-2 rounded-md bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 w-full">
               {errorMessage}
             </div>
