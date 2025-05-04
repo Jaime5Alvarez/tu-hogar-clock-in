@@ -2,9 +2,7 @@ import {
   pgTable,
   text,
   timestamp,
-  unique,
   boolean,
-  foreignKey,
   uuid,
 } from "drizzle-orm/pg-core";
 

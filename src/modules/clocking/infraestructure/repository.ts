@@ -3,7 +3,7 @@ import { ClockIn, ClockOut } from "@/modules/clocking/domain/entities";
 import { NeonHttpDatabase } from "drizzle-orm/neon-http";
 import { FactoryDrizzleClient } from "@/modules/shared/drizzle/drizzle-client";
 import * as schema from "@/modules/shared/drizzle/schema";
-import { eq, desc, isNull, and, not, inArray } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 
 class ClockingRepository implements IClockingRepository {
   private readonly db: NeonHttpDatabase<typeof schema>;
