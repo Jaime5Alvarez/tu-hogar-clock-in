@@ -23,14 +23,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   notes: z.string().optional(),
@@ -43,7 +38,7 @@ export default function Home() {
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
+  const router = useRouter();
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(new Date());
@@ -81,13 +76,16 @@ export default function Home() {
           clockType: values.clockType,
         }),
       });
-      
+
       if (response.ok) {
         setShowSuccess(true);
         form.reset();
       } else {
         const errorData = await response.json();
-        setErrorMessage(errorData.message || "Error al registrar el fichaje, por favor intente nuevamente.");
+        setErrorMessage(
+          errorData.message ||
+            "Error al registrar el fichaje, por favor intente nuevamente."
+        );
         setShowError(true);
       }
     } catch (error) {
@@ -229,18 +227,13 @@ export default function Home() {
         </CardFooter>
       </Card>
 
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button variant="link" className="mt-4">
-              Historial de registros
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Próximamente disponible</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <Button
+        variant="link"
+        onClick={() => router.push("/clock-history")}
+        className="mt-4 cursor-pointer"
+      >
+        Historial de registros
+      </Button>
     </main>
   );
 }
