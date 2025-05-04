@@ -92,7 +92,7 @@ export default function Home() {
       }
     } catch (error) {
       console.error(error);
-      setErrorMessage("Error al conectar con el servidor, por favor intente nuevamente.");
+      setErrorMessage("Un error ha ocurrido, por favor intente nuevamente.");
       setShowError(true);
     } finally {
       setIsLoading(false);
