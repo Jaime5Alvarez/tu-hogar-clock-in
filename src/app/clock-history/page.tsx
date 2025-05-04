@@ -42,9 +42,27 @@ export type ClockRecord = {
   clockInTime: string
   clockOutId: string | null
   clockOutTime: string | null
+  totalTime: string | null
   clockInNotes: string | null
   clockOutNotes: string | null
 }
+
+// Función para calcular el tiempo total entre entrada y salida
+const calculateTotalTime = (clockIn: string, clockOut: string | null): string => {
+  if (!clockOut) return "-";
+  
+  const startTime = new Date(clockIn);
+  const endTime = new Date(clockOut);
+  
+  // Calcular la diferencia en milisegundos
+  const diffMs = endTime.getTime() - startTime.getTime();
+  
+  // Convertir a horas y minutos
+  const hours = Math.floor(diffMs / (1000 * 60 * 60));
+  const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+  
+  return `${hours}h ${minutes}m`;
+};
 
 // Definición de columnas para la tabla
 export const columns: ColumnDef<ClockRecord>[] = [
@@ -115,6 +133,15 @@ export const columns: ColumnDef<ClockRecord>[] = [
         timeStyle: 'short'
       }).format(date)
       return <div>{formatted}</div>
+    },
+  },
+  {
+    accessorKey: "totalTime",
+    header: "Tiempo total",
+    cell: ({ row }) => {
+      const clockInTime = row.getValue("clockInTime") as string;
+      const clockOutTime = row.getValue("clockOutTime") as string | null;
+      return <div>{calculateTotalTime(clockInTime, clockOutTime)}</div>;
     },
   },
   {
